@@ -34,6 +34,12 @@ functions:
       - httpApi:
           path: /messages/{id}
           method: delete
+  ChangeMessage:
+    handler: functions/ChangeMessage/index.handler
+    events:
+      - httpApi:
+          path: /messages/{id}
+          method: put 
 
 resources:
   Resources:
