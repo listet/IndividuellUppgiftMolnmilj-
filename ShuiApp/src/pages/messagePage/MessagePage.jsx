@@ -22,8 +22,8 @@ function MessagePage() {
                 {
                     messages.map(message => {
                         return <article className='message-container' key={message.id}>
-                            <p>{message.text}</p>
-                            <h4>-{message.username}</h4>
+                            <p className='message-text'>{message.text}</p>
+                            <h4 className='message-username'>-{message.username}</h4>
                         </article>
                     })
                 }

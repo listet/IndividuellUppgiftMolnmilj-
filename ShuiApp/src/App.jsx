@@ -8,7 +8,6 @@ function App() {
       <Routes>
         <Route path="/" element={<MessagePage />} />
         <Route path="/MessagePage" element={<MessagePage />} />
-
       </Routes>
     </>
   )

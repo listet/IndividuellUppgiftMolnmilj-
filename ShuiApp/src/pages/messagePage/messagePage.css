@@ -1,0 +1,29 @@
+.messages-wrapper {
+    background-color: rgba(25, 39, 74, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.messages-header {
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding: 1rem;
+}
+
+.message-container {
+    background-image: url(../../assets/card.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 2rem;
+}
+
+.message-text {
+    padding: 1rem;
+}
+
+.message-username {
+    padding: 1rem;
+}
