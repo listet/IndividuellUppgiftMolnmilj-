@@ -1,29 +1,47 @@
-.messages-wrapper {
-    background-color: rgba(25, 39, 74, 1);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-
-.messages-header {
+/* .messages-header {
     color: white;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     padding: 1rem;
+} */
+
+.nomessage-text {
+    padding: 2rem 1rem;
+    color: white;
+    font-size: 1.2rem;
+    text-align: center;
 }
 
 .message-container {
-    background-image: url(../../assets/card.png);
+    /* background-image: url(../../assets/card.png);
     background-position: center;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat; */
+    background-color: white;
     margin: 2rem;
+    width: 70vw;
+    max-width: 500px;
+    border-radius: 5px;
+}
+
+.message-date {
+    color: rgba(0, 0, 0, 0.4);
+    padding: 1rem;
 }
 
 .message-text {
-    padding: 1rem;
+    padding: 0.5rem 1rem;
 }
 
 .message-username {
     padding: 1rem;
+}
+
+.writeMsg-btn {
+    position: fixed;
+    bottom: 3rem;
+    right: 3rem;
+    cursor: pointer;
+}
+
+.writeMsg-btn:active {
+    scale: 1.1;
 }

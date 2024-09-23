@@ -3,3 +3,22 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.messages-wrapper {
+  background-color: rgba(25, 39, 74, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 0.9rem;
+  position: relative;
+}
+
+.logo {
+  position: absolute;
+  top: 0;
+  left: 1rem;
+  cursor: pointer;
+}
