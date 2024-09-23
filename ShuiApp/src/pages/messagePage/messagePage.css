@@ -11,6 +11,25 @@
     text-align: center;
 }
 
+.sort-container {
+    color: white;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.sort-button {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 5px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    cursor: pointer;
+    background-color: white;
+}
+
+.sort-button:active {
+    scale: 1.1;
+}
+
 .message-container {
     /* background-image: url(../../assets/card.png);
     background-position: center;
@@ -22,9 +41,26 @@
     border-radius: 5px;
 }
 
+.messageinfo-container {
+    display: flex;
+    justify-content: space-between;
+}
+
 .message-date {
     color: rgba(0, 0, 0, 0.4);
     padding: 1rem;
+}
+
+.message-icon {
+    margin-top: 0.5rem;
+    margin-right: 1rem;
+    height: 1.8rem;
+    opacity: 0.4;
+}
+
+.message-icon:hover,
+.message-icon:active {
+    opacity: 1;
 }
 
 .message-text {

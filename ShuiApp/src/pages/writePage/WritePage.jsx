@@ -30,6 +30,7 @@ function WritePage() {
             <Link aria-label='Navigate to MessagePage' to="/MessagePage">
                 <img className='logo' src={logo} alt="logo" />
             </Link>
+
             <form className='form-container' onSubmit={postMessage}>
                 <textarea
                     className='form-message'
