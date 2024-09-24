@@ -78,16 +78,21 @@ function MessagePage() {
                         return <article className='message-container' key={message.id}>
                             <div className='messageinfo-container'>
                                 <p className='message-date'>{formatDate(message.createdAt)}</p>
-                                <img
-                                    className='message-icon'
-                                    src={deletemessageIcon}
-                                    alt="deletemessage Icon"
-                                    onClick={() => deleteMessage(message.pk, setMessages)}
-                                />
-                                <img
-                                    className='message-icon'
-                                    src={changemessageIcon}
-                                    alt="changemessage Icon" />
+                                <section>
+                                    <img
+                                        className='message-icon'
+                                        src={deletemessageIcon}
+                                        alt="deletemessage Icon"
+                                        onClick={() => deleteMessage(message.pk, setMessages)}
+                                    />
+                                    <Link to={`/WritePage?id=${message.pk}&text=${message.text}&username=${message.username}`}>
+                                        <img
+                                            className='message-icon'
+                                            src={changemessageIcon}
+                                            alt="changemessage Icon"
+                                        />
+                                    </Link>
+                                </section>
                             </div>
                             <p className='message-text'>{message.text}</p>
                             <h4 className='message-username'>- {message.username}</h4>

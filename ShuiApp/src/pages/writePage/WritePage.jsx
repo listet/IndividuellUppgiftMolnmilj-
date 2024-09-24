@@ -1,28 +1,54 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import logo from '../../assets/logoShui.png'
 import './writePage.css'
 
 function WritePage() {
 
-    const [text, setText] = useState('');
-    const [username, setUsername] = useState('');
-    const navigate = useNavigate();
 
-    const postMessage = (e) => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const messageId = queryParams.get('id');
+    const initialText = queryParams.get('text') || '';
+    const initialUsername = queryParams.get('username') || '';
+    const [text, setText] = useState(initialText);
+    const [username, setUsername] = useState(initialUsername);
+
+    useEffect(() => {
+        if (messageId) {
+            setText(initialText);
+            setUsername(initialUsername);
+        }
+    }, []);
+
+    const saveMessage = (e) => {
         e.preventDefault();
-        axios.post(`https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages`, {
-            text: text,
-            username: username
-        })
-            .then(() => {
-                navigate('/MessagePage');
+        if (messageId) {
+            axios.put(`https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages/${messageId}`, {
+                text: text,
+                username: username
             })
-            .catch(error => {
-                console.error("Error posting message:", error);
-            });
+                .then(() => {
+                    navigate('/MessagePage');
+                })
+                .catch(error => {
+                    console.error("Error updating message:", error);
+                });
+        } else {
+            axios.post(`https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages`, {
+                text: text,
+                username: username
+            })
+                .then(() => {
+                    navigate('/MessagePage');
+                })
+                .catch(error => {
+                    console.error("Error posting message:", error);
+                });
+        }
     }
 
     return (
@@ -30,8 +56,7 @@ function WritePage() {
             <Link aria-label='Navigate to MessagePage' to="/MessagePage">
                 <img className='logo' src={logo} alt="logo" />
             </Link>
-
-            <form className='form-container' onSubmit={postMessage}>
+            <form className='form-container' onSubmit={saveMessage}>
                 <textarea
                     className='form-message'
                     placeholder="Skriv ditt meddelande här..."
@@ -46,10 +71,12 @@ function WritePage() {
                     onChange={(e) => setUsername(e.target.value)}
                     maxLength={50}
                 />
-                <button className='form-button' type="submit">Publicera</button>
+                <button className='form-button' type="submit">
+                    {messageId ? 'Uppdatera' : 'Publicera'}
+                </button>
             </form>
         </section>
     )
 }
 
-export default WritePage
+export default WritePage;
