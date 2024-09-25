@@ -10,19 +10,8 @@ import { Link } from 'react-router-dom'
 
 const getMessages = async () => {
     const response = await axios.get('https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages');
-    return response.data; // Returnera meddelandena
+    return response.data;
 };
-// const getMessages = async (setMessages, username = '') => {
-//     const response = await axios.get('https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages')
-//         .then(response => setMessages(response.data))
-//     const messages = response;
-
-//     // Filtrera meddelanden om username är angivet
-//     if (username) {
-//         return messages.filter(message => message.username.toLowerCase().includes(username.toLowerCase()));
-//     }
-//     return messages;
-// }
 
 function formatDate(dateString) {
     const date = new Date(dateString);
@@ -37,10 +26,10 @@ function formatDate(dateString) {
     return `${formattedDate} kl. ${formattedTime}`;
 }
 
-const deleteMessage = (id, setMessages) => {
+const deleteMessage = (id, setMessages, messages) => {
     axios.delete(`https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages/${id}`)
         .then(() => {
-            getMessages(setMessages);
+            setMessages(messages.filter(message => message.pk !== id));
         })
         .catch(error => console.error("Error deleting message:", error));
 }
@@ -51,11 +40,12 @@ function MessagePage() {
     const [searchUsername, setSearchUsername] = useState('');
 
     useEffect(() => {
-        getMessages().then(setMessages); // Hämta meddelanden när komponenten laddas
+        getMessages().then(fetchedMessages => {
+            // Sortera meddelanden från nyast till äldst som default
+            const sortedMessages = fetchedMessages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            setMessages(sortedMessages);
+        });
     }, []);
-    // useEffect(() => {
-    //     getMessages(setMessages);
-    // }, []);
 
     const sortMessages = (order) => {
         const sortedMessages = [...messages].sort((a, b) => {
@@ -80,14 +70,11 @@ function MessagePage() {
         <section className='messages-wrapper'>
             <Link aria-label='Navigate to MessagePage' to="/MessagePage"
                 onClick={() => {
-                    setSearchUsername(''); // Återställ sökfilter
-                    getMessages().then(setMessages); // Hämta alla meddelanden
-                }}
-            >
+                    setSearchUsername('');
+                    getMessages().then(setMessages);
+                }}>
                 <img className='logo' src={logo} alt="logo" />
             </Link>
-            {/* <h1 className='messages-header'>Anslagstavla</h1> */}
-
             <section className='sort-container'>
                 <p>Sortera meddelanden:</p>
                 <section className='sort-buttons'>
@@ -122,7 +109,7 @@ function MessagePage() {
                                         className='message-icon'
                                         src={deletemessageIcon}
                                         alt="deletemessage Icon"
-                                        onClick={() => deleteMessage(message.pk, setMessages)}
+                                        onClick={() => deleteMessage(message.pk, setMessages, messages)}
                                     />
                                     <Link to={`/WritePage?id=${message.pk}&text=${message.text}&username=${message.username}`}>
                                         <img

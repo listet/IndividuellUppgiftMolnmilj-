@@ -6,17 +6,17 @@ exports.handler = async (event) => {
     const { text, username } = JSON.parse(event.body);
 
     try {
+        //Hämtar Item via ID
         const { Item } = await db.get({
             TableName: 'messages-db',
             Key: {
                 pk: id,
             }
         });
-
         if (!Item) {
             return sendError(404, { success: false, message: 'Message not found' });
         }
-
+        //uppdaterar i databasen utifrån ändringar i text och/eller username
         await db.update({
             TableName: 'messages-db',
             Key: { pk: id },

@@ -4,11 +4,15 @@ const { v4: uuid } = require('uuid');
 
 exports.handler = async (event) => {
     const { text, username } = JSON.parse(event.body);
+
+    //En ny anteckning kräver text samt användarnamn
     if (text && username) {
         try {
+            //Får därefter ett ID samt tid för skapande
             const id = uuid().substring(0, 5);
             const createdAt = new Date().toISOString();
 
+            //Lägger in i databasen
             await db.put({
                 TableName: 'messages-db',
                 Item: {
