@@ -30,6 +30,11 @@
     scale: 1.1;
 }
 
+.sort-input {
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
 .message-container {
     /* background-image: url(../../assets/card.png);
     background-position: center;

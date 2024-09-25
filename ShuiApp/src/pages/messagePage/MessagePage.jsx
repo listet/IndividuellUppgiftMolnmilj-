@@ -8,10 +8,21 @@ import './messagePage.css'
 import { Link } from 'react-router-dom'
 
 
-const getMessages = (setMessages) => {
-    axios.get('https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages')
-        .then(response => setMessages(response.data))
-}
+const getMessages = async () => {
+    const response = await axios.get('https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages');
+    return response.data; // Returnera meddelandena
+};
+// const getMessages = async (setMessages, username = '') => {
+//     const response = await axios.get('https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages')
+//         .then(response => setMessages(response.data))
+//     const messages = response;
+
+//     // Filtrera meddelanden om username är angivet
+//     if (username) {
+//         return messages.filter(message => message.username.toLowerCase().includes(username.toLowerCase()));
+//     }
+//     return messages;
+// }
 
 function formatDate(dateString) {
     const date = new Date(dateString);
@@ -37,10 +48,14 @@ const deleteMessage = (id, setMessages) => {
 function MessagePage() {
     const [messages, setMessages] = useState([]);
     const [sortOrder, setSortOrder] = useState('desc');
+    const [searchUsername, setSearchUsername] = useState('');
 
     useEffect(() => {
-        getMessages(setMessages);
+        getMessages().then(setMessages); // Hämta meddelanden när komponenten laddas
     }, []);
+    // useEffect(() => {
+    //     getMessages(setMessages);
+    // }, []);
 
     const sortMessages = (order) => {
         const sortedMessages = [...messages].sort((a, b) => {
@@ -52,9 +67,23 @@ function MessagePage() {
         setSortOrder(order);
     };
 
+    const handleSearch = async (e) => {
+        e.preventDefault();
+        const allMessages = await getMessages(); // Hämta alla meddelanden
+        const filteredMessages = allMessages.filter(message =>
+            message.username.toLowerCase().includes(searchUsername.toLowerCase())
+        );
+        setMessages(filteredMessages); // Ställ in de filtrerade meddelandena
+    };
+
     return (
         <section className='messages-wrapper'>
-            <Link aria-label='Navigate to MessagePage' to="/MessagePage">
+            <Link aria-label='Navigate to MessagePage' to="/MessagePage"
+                onClick={() => {
+                    setSearchUsername(''); // Återställ sökfilter
+                    getMessages().then(setMessages); // Hämta alla meddelanden
+                }}
+            >
                 <img className='logo' src={logo} alt="logo" />
             </Link>
             {/* <h1 className='messages-header'>Anslagstavla</h1> */}
@@ -69,6 +98,16 @@ function MessagePage() {
                         nyast till äldst
                     </button>
                 </section>
+                <form onSubmit={handleSearch}>
+                    <p>Sök efter användare:</p>
+                    <input
+                        className='sort-input'
+                        type="text"
+                        value={searchUsername}
+                        onChange={(e) => setSearchUsername(e.target.value)}
+                    />
+                    <button className='sort-button' type="submit">Sök</button>
+                </form>
             </section>
             <section>
                 {messages.length === 0 ? (
