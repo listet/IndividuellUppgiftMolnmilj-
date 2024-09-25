@@ -7,7 +7,6 @@ import './writePage.css'
 
 function WritePage() {
 
-
     const navigate = useNavigate();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -22,14 +21,14 @@ function WritePage() {
             setText(initialText);
             setUsername(initialUsername);
         }
-    }, []);
+    }, [messageId, initialText, initialUsername]);
 
     const saveMessage = (e) => {
         e.preventDefault();
         if (messageId) {
             axios.put(`https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages/${messageId}`, {
-                text: text,
-                username: username
+                text: text.trim(),
+                username: username.trim(),
             })
                 .then(() => {
                     navigate('/MessagePage');
@@ -39,8 +38,8 @@ function WritePage() {
                 });
         } else {
             axios.post(`https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages`, {
-                text: text,
-                username: username
+                text: text.trim(),
+                username: username.trim(),
             })
                 .then(() => {
                     navigate('/MessagePage');
