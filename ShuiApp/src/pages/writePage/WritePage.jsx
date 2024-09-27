@@ -17,6 +17,7 @@ function WritePage() {
     const [username, setUsername] = useState(initialUsername);
 
     useEffect(() => {
+        //Om ID skickad med ska text och username fyllas i
         if (messageId) {
             setText(initialText);
             setUsername(initialUsername);
@@ -25,6 +26,14 @@ function WritePage() {
 
     const saveMessage = (e) => {
         e.preventDefault();
+
+        //KOntrollerar att båda fält är ifyllda
+        if (text.trim().length < 2 || username.trim().length < 2) {
+            alert("Både meddelande och användarnamn måste innehålla minst 2 tecken.");
+            return;
+        }
+
+        //Om ID finns sker en uppdatering av tidigare meddelande
         if (messageId) {
             axios.put(`https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages/${messageId}`, {
                 text: text.trim(),
@@ -37,6 +46,7 @@ function WritePage() {
                     console.error("Error updating message:", error);
                 });
         } else {
+            //Annars sker en post (nytt meddelande)
             axios.post(`https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages`, {
                 text: text.trim(),
                 username: username.trim(),

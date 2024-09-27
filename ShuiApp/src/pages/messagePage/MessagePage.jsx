@@ -7,13 +7,19 @@ import changemessageIcon from '../../assets/pen.png'
 import './messagePage.css'
 import { Link } from 'react-router-dom'
 
-
+//Hämtar meddelanden
 const getMessages = async () => {
-    const response = await axios.get('https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages');
-    return response.data;
+    try {
+        const response = await axios.get('https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages');
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching messages:", error);
+        return [];
+    }
 };
 
-function formatDate(dateString) {
+//Formaterar datum/tid
+const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = {
         weekday: 'long',
@@ -26,52 +32,63 @@ function formatDate(dateString) {
     return `${formattedDate} kl. ${formattedTime}`;
 }
 
-const deleteMessage = (id, setMessages, messages) => {
-    axios.delete(`https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages/${id}`)
-        .then(() => {
-            setMessages(messages.filter(message => message.pk !== id));
-        })
-        .catch(error => console.error("Error deleting message:", error));
-}
+//Tar bort meddelande via ID och updaterar Messages
+const deleteMessage = async (id, setMessages, messages) => {
+    try {
+        await axios.delete(`https://sth8new1el.execute-api.eu-north-1.amazonaws.com/messages/${id}`);
+        setMessages(messages.filter(message => message.pk !== id));
+    } catch (error) {
+        console.error("Error deleting message:", error);
+    }
+};
+
 
 function MessagePage() {
     const [messages, setMessages] = useState([]);
-    const [sortOrder, setSortOrder] = useState('desc');
+    const [allMessages, setAllMessages] = useState([]);
+    const [sortOrder, setSortOrder] = useState('');
     const [searchUsername, setSearchUsername] = useState('');
 
+    //Vid första rendering kallas alla meddelanden, läggs in i setMessages och sorteras
     useEffect(() => {
         getMessages().then(fetchedMessages => {
-            // Sortera meddelanden från nyast till äldst som default
-            const sortedMessages = fetchedMessages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            setMessages(sortedMessages);
+            setMessages(fetchedMessages);
+            //AllMessages behövs för att kunna göra nya sökningar på alla meddelanden efter första sökning är gjord
+            setAllMessages(fetchedMessages);
+            sortMessages('desc', fetchedMessages);
         });
     }, []);
 
-    const sortMessages = (order) => {
-        const sortedMessages = [...messages].sort((a, b) => {
+    //Sorterar meddelanden efter datum/tid 
+    const sortMessages = (order, messagesToSort = messages) => {
+        // Kopierar arrayen och sorterar efter datum stigande alt. fallande
+        const sorted = [...messagesToSort].sort((a, b) => {
             const dateA = new Date(a.createdAt);
             const dateB = new Date(b.createdAt);
             return order === 'asc' ? dateA - dateB : dateB - dateA;
         });
-        setMessages(sortedMessages);
+        setMessages(sorted);
         setSortOrder(order);
     };
 
-    const handleSearch = async (e) => {
+    //Hanterar sökning av användarnamn
+    const handleSearch = (e) => {
         e.preventDefault();
-        const allMessages = await getMessages(); // Hämta alla meddelanden
         const filteredMessages = allMessages.filter(message =>
             message.username.toLowerCase().includes(searchUsername.toLowerCase())
         );
-        setMessages(filteredMessages); // Ställ in de filtrerade meddelandena
+        setMessages(filteredMessages);
     };
 
     return (
         <section className='messages-wrapper'>
             <Link aria-label='Navigate to MessagePage' to="/MessagePage"
                 onClick={() => {
-                    setSearchUsername('');
-                    getMessages().then(setMessages);
+                    setSearchUsername(''); // Återställer sökningen
+                    getMessages().then(fetchedMessages => {
+                        sortMessages(fetchedMessages); // Sorterar och uppdaterar meddelanden
+                    });
+                    window.location.reload();
                 }}>
                 <img className='logo' src={logo} alt="logo" />
             </Link>
